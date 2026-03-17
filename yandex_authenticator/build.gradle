@@ -1,10 +1,25 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id('maven-publish')
+}
+
+project.ext {
+    artifactId = 'yandex_authenticator'
+    groupId = 'com.github.aakumykov'
+
+    majorVersionNum = commonMajorVersionNumber
+    minorVersionNum = commonMinorVersionNumber
+    patchVersionNum = commonPatchVersionNumber
+    suffix = commonVersionSuffix
+
+    versionCode = commonVersionCode
+
+    versionName = majorVersionNum + "." + minorVersionNum + "." + patchVersionNum + "-" + suffix
 }
 
 android {
-    namespace 'com.github.aakumykov.yandex_authenticator'
+    namespace groupId + "." + artifactId
     compileSdk {
         version = release(36)
     }
@@ -40,4 +55,17 @@ dependencies {
     androidTestImplementation libs.androidx.junit
 
     implementation libs.yandex.login.sdk.android.ng
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = project.groupId
+            artifactId = project.artifactId
+            version = versionName
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }
