@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             binding.authButton.text = getString(R.string.auth_in, cloudAuthProviderName)
             binding.authButton.setIconResource(R.drawable.ic_log_in)
             binding.authButton.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
-            binding.authTokenView.apply {
+            binding.infoView.apply {
                 text = ""
                 makeGone()
             }
@@ -164,9 +164,9 @@ class MainActivity : AppCompatActivity() {
             binding.authButton.text = getString(R.string.de_auth_from, cloudAuthProviderName)
             binding.authButton.setIconResource(R.drawable.ic_log_out)
             binding.authButton.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_END
-            binding.authTokenView.apply {
+            binding.infoView.apply {
                 makeVisible()
-                text = authToken
+                text = getString(R.string.auth_token, authToken)
             }
         }
     }

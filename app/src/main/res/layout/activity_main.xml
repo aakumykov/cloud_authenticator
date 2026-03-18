@@ -75,21 +75,22 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/authTokenView"
+        android:id="@+id/infoView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/loginTypeGroup"
         tools:visibility="visible"
         android:visibility="gone"
         android:textStyle="italic"
-        android:textColor="@android:color/primary_text_light"
+        android:maxLines="10"
+        android:ellipsize="end"
         tools:text="Токен авторизации" />
 
     <TextView
         android:id="@+id/errorView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/authTokenView"
+        android:layout_below="@id/infoView"
         android:textColor="#ff0000"
         tools:text="Ошибка" />
 
@@ -101,22 +102,5 @@
         android:layout_below="@id/errorView"
         android:visibility="gone"
         android:indeterminate="true" />
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/progressBar"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
-
-        <TextView
-            android:id="@+id/logView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="2dp"
-            tools:text="Вывод лога" />
-    </ScrollView>
 
 </RelativeLayout>

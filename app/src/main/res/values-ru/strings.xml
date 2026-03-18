@@ -10,4 +10,5 @@
     <string name="auth_in">Авторизоваться в %1$s</string>
     <string name="de_auth_from">Выйти из %1$s</string>
     <string name="auth_provider">Поставщик авторизации</string>
+    <string name="auth_token">Токен авторизации:\n%1$s</string>
 </resources>

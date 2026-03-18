@@ -10,4 +10,5 @@
     <string name="auth_in">Sign in with %1$s</string>
     <string name="de_auth_from">Sign out from %1$s</string>
     <string name="auth_provider">Auth provider</string>
+    <string name="auth_token">Auth token:\n%1$s</string>
 </resources>
