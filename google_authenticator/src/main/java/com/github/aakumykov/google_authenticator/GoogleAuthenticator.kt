@@ -27,7 +27,7 @@ class GoogleAuthenticator(
         googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestId()
             .requestEmail()
-            .requestIdToken(GOOGLE_AUTH_PLATFORM_CLIENT_ID)
+//            .requestIdToken(GOOGLE_AUTH_PLATFORM_CLIENT_ID)
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
@@ -84,7 +84,8 @@ class GoogleAuthenticator(
             return
         }
 
-        val authToken: String? = account.idToken
+        // FIXME: временно возвращаю id, так как с idToken не работает.
+        val authToken: String? = account.id
 
         if (null == authToken) {
             cloudAuthenticatorCallbacks.onCloudAuthFailed(

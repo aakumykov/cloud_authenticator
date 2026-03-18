@@ -75,7 +75,7 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/infoView"
+        android:id="@+id/authTokenView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/loginTypeGroup"
@@ -84,13 +84,15 @@
         android:textStyle="italic"
         android:maxLines="10"
         android:ellipsize="end"
+        android:textAlignment="center"
+        android:textColor="@color/auth_token"
         tools:text="Токен авторизации" />
 
     <TextView
         android:id="@+id/errorView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/infoView"
+        android:layout_below="@id/authTokenView"
         android:textColor="#ff0000"
         tools:text="Ошибка" />
 

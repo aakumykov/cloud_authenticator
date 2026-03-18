@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.RadioGroup
 import androidx.activity.enableEdgeToEdge
@@ -13,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.github.aakumykov.cloud_authenticator.databinding.ActivityMainBinding
+import com.github.aakumykov.cloud_authenticator.extensions.errorMsg
 import com.github.aakumykov.cloud_authenticator.extensions.errorMsgExtended
 import com.github.aakumykov.google_authenticator.GoogleAuthenticator
 import com.github.aakumykov.kotlin_playground.CloudAuthProvider
+import com.github.aakumykov.kotlin_playground.extensions.LogD
 import com.github.aakumykov.kotlin_playground.extensions.eraseStringFromPreferences
 import com.github.aakumykov.kotlin_playground.extensions.getStringFromPreferences
 import com.github.aakumykov.kotlin_playground.extensions.makeGone
@@ -69,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onCloudAuthFailed(throwable: Throwable) {
-            showToast(throwable.errorMsgExtended)
+            showError(throwable)
         }
 
         override fun onCloudAuthCancelled() {
@@ -155,7 +158,7 @@ class MainActivity : AppCompatActivity() {
             binding.authButton.text = getString(R.string.auth_in, cloudAuthProviderName)
             binding.authButton.setIconResource(R.drawable.ic_log_in)
             binding.authButton.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
-            binding.infoView.apply {
+            binding.authTokenView.apply {
                 text = ""
                 makeGone()
             }
@@ -164,7 +167,7 @@ class MainActivity : AppCompatActivity() {
             binding.authButton.text = getString(R.string.de_auth_from, cloudAuthProviderName)
             binding.authButton.setIconResource(R.drawable.ic_log_out)
             binding.authButton.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_END
-            binding.infoView.apply {
+            binding.authTokenView.apply {
                 makeVisible()
                 text = getString(R.string.auth_token, authToken)
             }
@@ -172,16 +175,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onStartAuthClicked() {
+        hideError()
+
         if (null == authToken) cloudAuthenticator.startAuth(signInLauncher)
         else cloudAuthenticator.deAuth()
     }
 
 
     private fun showError(t: Throwable) {
+        Log.e(TAG, t.errorMsg, t)
         binding.root.post {
             binding.errorView.text = t.errorMsgExtended
             binding.errorView.visibility = View.VISIBLE
         }
+        showToast(t.errorMsgExtended)
     }
 
     private fun hideError() {
@@ -190,24 +197,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showProgressBar() {
-        binding.root.post {
-            binding.progressBar.visibility = View.VISIBLE
-        }
-    }
-
     private fun hideProgressBar() {
         binding.root.post {
             binding.progressBar.visibility = View.GONE
         }
-    }
-
-    private fun action3() {
-        showToast("Привет 3")
-    }
-
-    private fun action4() {
-        showToast("Привет 4")
     }
 
     private fun showAppProperties() {
