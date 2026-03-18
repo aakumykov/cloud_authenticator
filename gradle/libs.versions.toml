@@ -9,6 +9,7 @@ appcompat = "1.7.1"
 material = "1.13.0"
 activity = "1.13.0"
 constraintlayout = "2.2.1"
+okhttp = "5.3.2"
 playServicesAuth = "21.5.1"
 preferenceKtx = "1.2.1"
 yandexLoginSdkAndroidNg = "dee19d9bcd"
@@ -23,6 +24,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 yandex-login-sdk-android-ng = { module = "com.github.aakumykov:yandex-login-sdk-android-ng", version.ref = "yandexLoginSdkAndroidNg" }
 

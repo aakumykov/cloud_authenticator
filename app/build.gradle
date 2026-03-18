@@ -50,4 +50,7 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
     implementation libs.androidx.preference.ktx
+
+    // OkHttp нужна для работы WebView для авторизации в Яндекс.
+    implementation(libs.okhttp)
 }
