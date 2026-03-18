@@ -5,9 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import com.github.aakumykov.cloud_authenticator.CloudAuthenticator
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -85,16 +83,16 @@ class GoogleAuthenticator(
             return
         }
 
-        val id: String? = account.id
+        val authToken: String? = account.idToken
 
-        if (null == id) {
+        if (null == authToken) {
             cloudAuthenticatorCallbacks.onCloudAuthFailed(
                 Exception("Id token from account is null")
             )
             return
         }
 
-        cloudAuthenticatorCallbacks.onCloudAuthSuccess(id)
+        cloudAuthenticatorCallbacks.onCloudAuthSuccess(authToken)
     }
 
 
