@@ -1,5 +1,7 @@
 package com.github.aakumykov.yandex_authenticator
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -10,36 +12,40 @@ import com.yandex.authsdk.YandexAuthResult
 import com.yandex.authsdk.YandexAuthSdkContract
 import com.yandex.authsdk.internal.strategy.LoginType
 
-typealias YandexLoginType = LoginType
+typealias YandexLoginType = com.yandex.authsdk.internal.strategy.LoginType
 
 class YandexAuthenticator(
-    private val loginType: LoginType,
-    componentActivity: ComponentActivity,
-    cloudAuthenticatorCallbacks: Callbacks
-) : CloudAuthenticator() {
-    private val activityResultLauncher: ActivityResultLauncher<YandexAuthLoginOptions>
+    loginType: LoginType,
+    private val context: Context,
+    private val cloudAuthenticatorCallbacks: Callbacks
+)
+    : CloudAuthenticator()
+{
+    val yandexAuthOptions: YandexAuthLoginOptions
+    val yandexAuthSdkContract: YandexAuthSdkContract
 
     init {
-        val yandexAuthOptions = YandexAuthOptions(componentActivity, true)
-        val yandexAuthSdkContract = YandexAuthSdkContract(yandexAuthOptions)
+        yandexAuthOptions = YandexAuthLoginOptions(convertLoginType(loginType))
+        yandexAuthSdkContract = YandexAuthSdkContract(YandexAuthOptions(context, true))
+    }
 
-        activityResultLauncher = componentActivity.registerForActivityResult(yandexAuthSdkContract) { result: YandexAuthResult ->
-            when(result) {
-                is YandexAuthResult.Success -> cloudAuthenticatorCallbacks.onCloudAuthSuccess(result.token.value)
-                is YandexAuthResult.Failure -> cloudAuthenticatorCallbacks.onCloudAuthFailed(result.exception)
-                else -> cloudAuthenticatorCallbacks.onCloudAuthCancelled()
-            }
-        }
+    override fun startAuth(activityResultLauncher: ActivityResultLauncher<Intent>) {
+        activityResultLauncher.launch(
+            yandexAuthSdkContract.createIntent(context,yandexAuthOptions)
+        )
     }
 
     override fun deAuth() {
-        Log.i(TAG, "Unauthorizing not implemented")
+        cloudAuthenticatorCallbacks.onDeAuthSuccess()
     }
 
-    override fun startAuth() {
-        activityResultLauncher.launch(
-            YandexAuthLoginOptions(convertLoginType(loginType))
-        )
+    override fun processAuthResult(resultCode: Int, data: Intent?) {
+        val authResult = yandexAuthSdkContract.parseResult(resultCode, data)
+        when(authResult) {
+            is YandexAuthResult.Success -> cloudAuthenticatorCallbacks.onCloudAuthSuccess(authResult.token.value)
+            is YandexAuthResult.Failure -> cloudAuthenticatorCallbacks.onCloudAuthFailed(authResult.exception)
+            else -> cloudAuthenticatorCallbacks.onCloudAuthCancelled()
+        }
     }
 
 
@@ -48,9 +54,5 @@ class YandexAuthenticator(
             LoginType.WEBVIEW -> YandexLoginType.WEBVIEW
             LoginType.NATIVE -> YandexLoginType.NATIVE
         }
-    }
-
-    companion object {
-        val TAG: String = YandexAuthenticator::class.java.simpleName
     }
 }

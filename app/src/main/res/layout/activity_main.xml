@@ -1,19 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/rootView"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <RadioGroup
+        android:id="@+id/authProviders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/authProvidersLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/auth_provider" />
+
+        <RadioButton
+            android:id="@+id/yandexAuth"
+            style="@style/auth_provider_radio"
+            android:textColor="@color/yandex"
+            app:buttonTint="@color/yandex"
+            android:text="@string/yandex"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/googleAuth"
+            style="@style/auth_provider_radio"
+            android:textColor="@color/google"
+            app:buttonTint="@color/google"
+            android:text="@string/google" />
+
+    </RadioGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/authButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/authProviders"
+        android:backgroundTint="#26A69A"
+        android:text="@string/do_authorize" />
+
+    <RadioGroup
+        android:id="@+id/loginTypeGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/authButton">
+
+        <TextView
+            android:id="@+id/authMethodLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/auth_method" />
+
+        <RadioButton
+            android:id="@+id/nativeLoginType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/auth_method_native" />
+
+        <RadioButton
+            android:id="@+id/webViewLoginType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/auth_method_webview" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/authTokenView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loginTypeGroup"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:textStyle="italic"
+        android:textColor="@android:color/primary_text_light"
+        tools:text="Токен авторизации" />
+
+    <TextView
+        android:id="@+id/errorView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/authTokenView"
+        android:textColor="#ff0000"
+        tools:text="Ошибка" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_below="@id/errorView"
+        android:visibility="gone"
+        android:indeterminate="true" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/progressBar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/logView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            tools:text="Вывод лога" />
+    </ScrollView>
+
+</RelativeLayout>

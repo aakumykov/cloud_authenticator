@@ -20,7 +20,9 @@ android {
 
         manifestPlaceholders = [YANDEX_CLIENT_ID:"ca97bac9bcc0449ca840a608c839ac08"]
     }
-
+    buildFeatures {
+        viewBinding true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -47,4 +49,5 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
+    implementation libs.androidx.preference.ktx
 }

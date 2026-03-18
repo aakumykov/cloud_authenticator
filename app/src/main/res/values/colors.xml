@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="yandex">#f8604a</color>
+    <color name="google">#4285f4</color>
 </resources>

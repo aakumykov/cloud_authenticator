@@ -2,6 +2,7 @@ package com.github.aakumykov.google_authenticator
 
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -15,14 +16,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 
 class GoogleAuthenticator(
-    private val loginType: LoginType,
-    private val componentActivity: ComponentActivity,
+    loginType: LoginType,
+    private val context: Context,
     private val cloudAuthenticatorCallbacks: Callbacks,
-) : CloudAuthenticator() {
-
+)
+    : CloudAuthenticator()
+{
     private val googleSignInOptions: GoogleSignInOptions
     private val googleSignInClient: GoogleSignInClient
-    private val signInLauncher: ActivityResultLauncher<Intent>
 
     init {
         googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -30,18 +31,21 @@ class GoogleAuthenticator(
             .requestEmail()
             .build()
 
-        googleSignInClient = GoogleSignIn.getClient(componentActivity, googleSignInOptions)
-
-        signInLauncher = componentActivity.registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            processIntent(result.resultCode, result.data)
-        }
+        googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
     }
 
 
-    override fun startAuth() {
-        signInLauncher.launch(googleSignInClient.signInIntent)
+    override fun startAuth(activityResultLauncher: ActivityResultLauncher<Intent>) {
+        activityResultLauncher.launch(googleSignInClient.signInIntent)
+    }
+
+
+    override fun processAuthResult(resultCode: Int, data: Intent?) {
+        when(resultCode) {
+            RESULT_OK -> processSignInData(data)
+            RESULT_CANCELED -> cloudAuthenticatorCallbacks.onCloudAuthCancelled()
+            else -> cloudAuthenticatorCallbacks.onCloudAuthFailed(Exception("Unknown result"))
+        }
     }
 
 
@@ -50,15 +54,6 @@ class GoogleAuthenticator(
             .addOnSuccessListener { cloudAuthenticatorCallbacks.onDeAuthSuccess() }
             .addOnCanceledListener { cloudAuthenticatorCallbacks.onDeAuthCancelled() }
             .addOnFailureListener { exception -> cloudAuthenticatorCallbacks.onDeAuthError(exception) }
-    }
-
-
-    private fun processIntent(resultCode: Int, data: Intent?) {
-        when(resultCode) {
-            RESULT_OK -> processSignInData(data)
-            RESULT_CANCELED -> cloudAuthenticatorCallbacks.onCloudAuthCancelled()
-            else -> cloudAuthenticatorCallbacks.onCloudAuthFailed(Exception("Unknown result"))
-        }
     }
 
 
@@ -80,7 +75,7 @@ class GoogleAuthenticator(
     private fun processGoogleAccount() {
 
         val account: GoogleSignInAccount? = GoogleSignIn
-            .getLastSignedInAccount(componentActivity)
+            .getLastSignedInAccount(context)
 
         if (null == account) {
             Exception("Error getting account info").also {
