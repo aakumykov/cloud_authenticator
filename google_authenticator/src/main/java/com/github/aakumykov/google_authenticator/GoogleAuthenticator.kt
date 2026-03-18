@@ -27,6 +27,7 @@ class GoogleAuthenticator(
         googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestId()
             .requestEmail()
+            .requestIdToken(GOOGLE_AUTH_PLATFORM_CLIENT_ID)
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
