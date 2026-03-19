@@ -1,4 +1,4 @@
-package com.github.aakumykov.activities.extensions
+package com.github.aakumykov.cloud_authenticator.extensions
 
 val Throwable.errorMsg: String get() = message ?: javaClass.name
 
