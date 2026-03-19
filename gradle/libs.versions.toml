@@ -12,7 +12,6 @@ constraintlayout = "2.2.1"
 okhttp = "5.3.2"
 playServicesAuth = "21.5.1"
 preferenceKtx = "1.2.1"
-storage_access_helper = "2.0.0-alpha"
 yandexLoginSdkAndroidNg = "dee19d9bcd"
 
 [libraries]
@@ -27,7 +26,6 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
-storage_access_helper = { module = "com.github.aakumykov:storage_access_helper", version.ref = "storage_access_helper" }
 yandex-login-sdk-android-ng = { module = "com.github.aakumykov:yandex-login-sdk-android-ng", version.ref = "yandexLoginSdkAndroidNg" }
 
 [plugins]
