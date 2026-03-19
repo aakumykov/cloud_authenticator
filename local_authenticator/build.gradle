@@ -1,10 +1,25 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id('maven-publish')
+}
+
+project.ext {
+    artifactId = 'cloud_authenticator'
+    groupId = 'com.github.aakumykov'
+
+    majorVersionNum = commonMajorVersionNumber
+    minorVersionNum = commonMinorVersionNumber
+    patchVersionNum = commonPatchVersionNumber
+    suffix = commonVersionSuffix
+
+    versionCode = commonVersionCode
+
+    versionName = majorVersionNum + "." + minorVersionNum + "." + patchVersionNum + "-" + suffix
 }
 
 android {
-    namespace 'com.github.aakumykov.local_authenticator'
+    namespace groupId + "." + artifactId
     compileSdk {
         version = release(36)
     }
@@ -39,4 +54,17 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = project.groupId
+            artifactId = project.artifactId
+            version = versionName
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }
