@@ -1,5 +1,6 @@
 package com.github.aakumykov.cloud_authenticator
 
+import com.github.aakumykov.cloud_authenticator.R
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -25,6 +26,7 @@ import com.github.aakumykov.kotlin_playground.extensions.makeGone
 import com.github.aakumykov.kotlin_playground.extensions.makeVisible
 import com.github.aakumykov.kotlin_playground.extensions.showToast
 import com.github.aakumykov.kotlin_playground.extensions.storeStringInPreferences
+import com.github.aakumykov.local_authenticator.LocalAuthenticator
 import com.github.aakumykov.yandex_authenticator.YandexAuthenticator
 import com.google.android.material.button.MaterialButton
 
@@ -43,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private val cloudAuthenticator: CloudAuthenticator get() = when(cloudAuthProvider) {
         CloudAuthProvider.YANDEX -> yandexAuthenticator()
         CloudAuthProvider.GOOGLE -> googleAuthenticator()
+        CloudAuthProvider.LOCAL -> localAuthenticator()
     }.apply {
         currentAuthenticator = this
     }
@@ -53,12 +56,14 @@ class MainActivity : AppCompatActivity() {
         get() = when(binding.authProviders.checkedRadioButtonId) {
         R.id.yandexAuth -> CloudAuthProvider.YANDEX
         R.id.googleAuth -> CloudAuthProvider.GOOGLE
+        R.id.localAuth -> CloudAuthProvider.LOCAL
         else -> throw IllegalStateException("Неизвестный провайдер авторизации в интерфейсе")
     }
 
     private val cloudAuthProviderName: String get() = when(cloudAuthProvider) {
-        CloudAuthProvider.YANDEX -> "Яндекс"
-        CloudAuthProvider.GOOGLE -> "Google"
+        CloudAuthProvider.YANDEX -> getString(R.string.yandex)
+        CloudAuthProvider.GOOGLE -> getString(R.string.google)
+        CloudAuthProvider.LOCAL -> getString(R.string.local)
     }
 
 
@@ -143,6 +148,10 @@ class MainActivity : AppCompatActivity() {
             this,
             authCallbacks
         )
+    }
+
+    private fun localAuthenticator(): CloudAuthenticator {
+        return LocalAuthenticator(authCallbacks)
     }
 
     private fun loginType(): CloudAuthenticator.LoginType {
