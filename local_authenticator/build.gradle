@@ -5,7 +5,7 @@ plugins {
 }
 
 project.ext {
-    artifactId = 'cloud_authenticator'
+    artifactId = 'local_authenticator'
     groupId = 'com.github.aakumykov'
 
     majorVersionNum = commonMajorVersionNumber
