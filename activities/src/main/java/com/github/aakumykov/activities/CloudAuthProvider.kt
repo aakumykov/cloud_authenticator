@@ -1,4 +1,4 @@
-package com.github.aakumykov.kotlin_playground
+package com.github.aakumykov.activities
 
 enum class CloudAuthProvider {
     YANDEX,

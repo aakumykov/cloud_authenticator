@@ -12,11 +12,13 @@ constraintlayout = "2.2.1"
 okhttp = "5.3.2"
 playServicesAuth = "21.5.1"
 preferenceKtx = "1.2.1"
+yandex_authenticator = "0.0.3-alpha"
 yandexLoginSdkAndroidNg = "dee19d9bcd"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
+google_authenticator = { module = "com.github.aakumykov.cloud_authenticator:google_authenticator", version.ref = "yandex_authenticator" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -27,6 +29,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 yandex-login-sdk-android-ng = { module = "com.github.aakumykov:yandex-login-sdk-android-ng", version.ref = "yandexLoginSdkAndroidNg" }
+yandex_authenticator = { module = "com.github.aakumykov.cloud_authenticator:yandex_authenticator", version.ref = "yandex_authenticator" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

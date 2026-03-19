@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_description">Облачной авторизации демо</string>
+    <string name="yandex">Яндекс</string>
+    <string name="google">Google</string>
+    <string name="do_authorize">Авторизоваться</string>
+    <string name="auth_method">Метод авторизации</string>
+    <string name="auth_method_native">Приложение</string>
+    <string name="auth_method_webview">Веб</string>
+    <string name="auth_in">Авторизоваться в %1$s</string>
+    <string name="de_auth_from">Выйти из %1$s</string>
+    <string name="auth_provider">Поставщик авторизации</string>
+    <string name="auth_token">Токен авторизации:\n%1$s</string>
+</resources>
