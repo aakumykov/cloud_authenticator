@@ -14,7 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 
 class GoogleAuthenticator(
-    loginType: LoginType,
+    loginType: LoginType = LoginType.NATIVE,
     private val context: Context,
     private val cloudAuthenticatorCallbacks: Callbacks,
 )
