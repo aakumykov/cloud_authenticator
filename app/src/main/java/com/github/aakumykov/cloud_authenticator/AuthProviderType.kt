@@ -1,6 +1,6 @@
 package com.github.aakumykov.kotlin_playground
 
-enum class CloudAuthProvider {
+enum class AuthProviderType {
     YANDEX,
     GOOGLE,
     LOCAL

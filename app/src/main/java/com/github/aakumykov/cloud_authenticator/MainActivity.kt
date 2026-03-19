@@ -1,6 +1,5 @@
 package com.github.aakumykov.cloud_authenticator
 
-import com.github.aakumykov.cloud_authenticator.R
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,8 +17,7 @@ import com.github.aakumykov.cloud_authenticator.databinding.ActivityMainBinding
 import com.github.aakumykov.cloud_authenticator.extensions.errorMsg
 import com.github.aakumykov.cloud_authenticator.extensions.errorMsgExtended
 import com.github.aakumykov.google_authenticator.GoogleAuthenticator
-import com.github.aakumykov.kotlin_playground.CloudAuthProvider
-import com.github.aakumykov.kotlin_playground.extensions.LogD
+import com.github.aakumykov.kotlin_playground.AuthProviderType
 import com.github.aakumykov.kotlin_playground.extensions.eraseStringFromPreferences
 import com.github.aakumykov.kotlin_playground.extensions.getStringFromPreferences
 import com.github.aakumykov.kotlin_playground.extensions.makeGone
@@ -39,31 +37,31 @@ class MainActivity : AppCompatActivity() {
 //    private var _oldAuthenticator: CloudAuthenticator? = null
     private var currentAuthenticator: CloudAuthenticator? = null
 
-    /*private var _currentAuthProvider: CloudAuthProvider? = null
-    private val currentAuthProvider: CloudAuthProvider get() = _currentAuthProvider!!*/
+    /*private var _currentAuthProvider: AuthProviderType? = null
+    private val currentAuthProvider: AuthProviderType get() = _currentAuthProvider!!*/
 
-    private val cloudAuthenticator: CloudAuthenticator get() = when(cloudAuthProvider) {
-        CloudAuthProvider.YANDEX -> yandexAuthenticator()
-        CloudAuthProvider.GOOGLE -> googleAuthenticator()
-        CloudAuthProvider.LOCAL -> localAuthenticator()
+    private val cloudAuthenticator: CloudAuthenticator get() = when(authProvider) {
+        AuthProviderType.YANDEX -> yandexAuthenticator()
+        AuthProviderType.GOOGLE -> googleAuthenticator()
+        AuthProviderType.LOCAL -> localAuthenticator()
     }.apply {
         currentAuthenticator = this
     }
 
     private var authToken: String? = null
 
-    private val cloudAuthProvider: CloudAuthProvider
+    private val authProvider: AuthProviderType
         get() = when(binding.authProviders.checkedRadioButtonId) {
-        R.id.yandexAuth -> CloudAuthProvider.YANDEX
-        R.id.googleAuth -> CloudAuthProvider.GOOGLE
-        R.id.localAuth -> CloudAuthProvider.LOCAL
+        R.id.yandexAuth -> AuthProviderType.YANDEX
+        R.id.googleAuth -> AuthProviderType.GOOGLE
+        R.id.localAuth -> AuthProviderType.LOCAL
         else -> throw IllegalStateException("Неизвестный провайдер авторизации в интерфейсе")
     }
 
-    private val cloudAuthProviderName: String get() = when(cloudAuthProvider) {
-        CloudAuthProvider.YANDEX -> getString(R.string.yandex)
-        CloudAuthProvider.GOOGLE -> getString(R.string.google)
-        CloudAuthProvider.LOCAL -> getString(R.string.local)
+    private val cloudAuthProviderName: String get() = when(authProvider) {
+        AuthProviderType.YANDEX -> getString(R.string.yandex)
+        AuthProviderType.GOOGLE -> getString(R.string.google)
+        AuthProviderType.LOCAL -> getString(R.string.local)
     }
 
 
@@ -151,7 +149,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun localAuthenticator(): CloudAuthenticator {
-        return LocalAuthenticator(authCallbacks)
+        return LocalAuthenticator(this,authCallbacks)
     }
 
     private fun loginType(): CloudAuthenticator.LoginType {
