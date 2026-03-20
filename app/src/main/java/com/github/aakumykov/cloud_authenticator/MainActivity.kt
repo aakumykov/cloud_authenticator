@@ -1,6 +1,5 @@
 package com.github.aakumykov.cloud_authenticator
 
-import com.github.aakumykov.cloud_authenticator.R
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,7 +18,6 @@ import com.github.aakumykov.cloud_authenticator.extensions.errorMsg
 import com.github.aakumykov.cloud_authenticator.extensions.errorMsgExtended
 import com.github.aakumykov.google_authenticator.GoogleAuthenticator
 import com.github.aakumykov.kotlin_playground.CloudAuthProvider
-import com.github.aakumykov.kotlin_playground.extensions.LogD
 import com.github.aakumykov.kotlin_playground.extensions.eraseStringFromPreferences
 import com.github.aakumykov.kotlin_playground.extensions.getStringFromPreferences
 import com.github.aakumykov.kotlin_playground.extensions.makeGone
@@ -137,8 +135,9 @@ class MainActivity : AppCompatActivity() {
     private fun yandexAuthenticator(): CloudAuthenticator {
         return YandexAuthenticator(
             loginType = loginType(),
-            this,
-            authCallbacks
+            context = this,
+            cloudAuthenticatorCallbacks = authCallbacks,
+            enableLogging = true
         )
     }
 

@@ -17,7 +17,8 @@ typealias YandexLoginType = com.yandex.authsdk.internal.strategy.LoginType
 class YandexAuthenticator(
     loginType: LoginType = LoginType.NATIVE,
     private val context: Context,
-    private val cloudAuthenticatorCallbacks: Callbacks
+    private val cloudAuthenticatorCallbacks: Callbacks,
+    enableLogging: Boolean = false
 )
     : CloudAuthenticator()
 {
@@ -26,7 +27,7 @@ class YandexAuthenticator(
 
     init {
         yandexAuthOptions = YandexAuthLoginOptions(convertLoginType(loginType))
-        yandexAuthSdkContract = YandexAuthSdkContract(YandexAuthOptions(context, true))
+        yandexAuthSdkContract = YandexAuthSdkContract(YandexAuthOptions(context, enableLogging))
     }
 
     override fun startAuth(activityResultLauncher: ActivityResultLauncher<Intent>) {
