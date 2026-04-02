@@ -54,7 +54,8 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
 
-    implementation libs.yandex.login.sdk.android.ng
+//    implementation libs.yandex.login.sdk.android.ng
+    implementation libs.authsdk
 }
 
 publishing {
