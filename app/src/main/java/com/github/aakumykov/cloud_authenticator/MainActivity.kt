@@ -9,21 +9,20 @@ import android.view.View
 import android.widget.RadioGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.github.aakumykov.cloud_authenticator.R
 import com.github.aakumykov.cloud_authenticator.databinding.ActivityMainBinding
 import com.github.aakumykov.cloud_authenticator.extensions.errorMsg
 import com.github.aakumykov.cloud_authenticator.extensions.errorMsgExtended
 import com.github.aakumykov.google_authenticator.GoogleAuthenticator
-import com.github.aakumykov.kotlin_playground.CloudAuthProvider
-import com.github.aakumykov.kotlin_playground.extensions.eraseStringFromPreferences
-import com.github.aakumykov.kotlin_playground.extensions.getStringFromPreferences
-import com.github.aakumykov.kotlin_playground.extensions.makeGone
-import com.github.aakumykov.kotlin_playground.extensions.makeVisible
-import com.github.aakumykov.kotlin_playground.extensions.showToast
-import com.github.aakumykov.kotlin_playground.extensions.storeStringInPreferences
+import com.github.aakumykov.cloud_authenticator.extensions.eraseStringFromPreferences
+import com.github.aakumykov.cloud_authenticator.extensions.getStringFromPreferences
+import com.github.aakumykov.cloud_authenticator.extensions.makeGone
+import com.github.aakumykov.cloud_authenticator.extensions.makeVisible
+import com.github.aakumykov.cloud_authenticator.extensions.showToast
+import com.github.aakumykov.cloud_authenticator.extensions.storeStringInPreferences
 import com.github.aakumykov.local_authenticator.LocalAuthenticator
 import com.github.aakumykov.yandex_authenticator.YandexAuthenticator
 import com.google.android.material.button.MaterialButton
@@ -34,11 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-//    private var _oldAuthenticator: CloudAuthenticator? = null
     private var currentAuthenticator: CloudAuthenticator? = null
-
-    /*private var _currentAuthProvider: CloudAuthProvider? = null
-    private val currentAuthProvider: CloudAuthProvider get() = _currentAuthProvider!!*/
 
     private val cloudAuthenticator: CloudAuthenticator get() = when(cloudAuthProvider) {
         CloudAuthProvider.YANDEX -> yandexAuthenticator()
@@ -103,12 +98,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            cloudAuthenticator.processAuthResult(result.resultCode, result.data)
-        }
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        cloudAuthenticator.prepare(this)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rootView)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -185,7 +178,7 @@ class MainActivity : AppCompatActivity() {
     private fun onStartAuthClicked() {
         hideError()
 
-        if (null == authToken) cloudAuthenticator.startAuth(signInLauncher)
+        if (null == authToken) cloudAuthenticator.startAuth()
         else cloudAuthenticator.deAuth()
     }
 

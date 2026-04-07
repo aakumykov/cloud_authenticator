@@ -2,9 +2,10 @@ package com.github.aakumykov.yandex_authenticator
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import com.github.aakumykov.cloud_authenticator.CloudAuthenticator
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
@@ -12,7 +13,7 @@ import com.yandex.authsdk.YandexAuthResult
 import com.yandex.authsdk.YandexAuthSdkContract
 import com.yandex.authsdk.internal.strategy.LoginType
 
-typealias YandexLoginType = com.yandex.authsdk.internal.strategy.LoginType
+typealias YandexLoginType = LoginType
 
 class YandexAuthenticator(
     loginType: LoginType = LoginType.NATIVE,
@@ -30,8 +31,22 @@ class YandexAuthenticator(
         yandexAuthSdkContract = YandexAuthSdkContract(YandexAuthOptions(context, enableLogging))
     }
 
-    override fun startAuth(activityResultLauncher: ActivityResultLauncher<Intent>) {
-        activityResultLauncher.launch(
+    private var activityResultLauncher: ActivityResultLauncher<Intent>? = null
+
+    override fun prepare(componentActivity: ComponentActivity) {
+        activityResultLauncher = componentActivity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            processAuthResult(result.resultCode, result.data)
+        }
+    }
+
+    override fun prepare(fragment: Fragment) {
+        activityResultLauncher = fragment.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            processAuthResult(result.resultCode, result.data)
+        }
+    }
+
+    override fun startAuth() {
+        activityResultLauncher?.launch(
             yandexAuthSdkContract.createIntent(context,yandexAuthOptions)
         )
     }
@@ -40,7 +55,9 @@ class YandexAuthenticator(
         cloudAuthenticatorCallbacks.onDeAuthSuccess()
     }
 
-    override fun processAuthResult(resultCode: Int, data: Intent?) {
+
+
+    private fun processAuthResult(resultCode: Int, data: Intent?) {
         val authResult = yandexAuthSdkContract.parseResult(resultCode, data)
         when(authResult) {
             is YandexAuthResult.Success -> cloudAuthenticatorCallbacks.onCloudAuthSuccess(authResult.token.value)

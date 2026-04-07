@@ -1,5 +1,6 @@
 [versions]
 agp = "8.13.2"
+fragment = "1.8.9"
 kotlin = "2.3.10"
 coreKtx = "1.18.0"
 junit = "4.13.2"
@@ -16,6 +17,7 @@ yandexLoginSdkAndroidNg = "dee19d9bcd"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

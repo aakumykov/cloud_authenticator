@@ -1,4 +1,4 @@
-package com.github.aakumykov.kotlin_playground.extensions
+package com.github.aakumykov.cloud_authenticator.extensions
 
 import android.util.Log
 

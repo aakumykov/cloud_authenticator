@@ -1,12 +1,18 @@
 package com.github.aakumykov.cloud_authenticator
 
 import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.Fragment
 
 abstract class CloudAuthenticator() {
 
-    abstract fun startAuth(activityResultLauncher: ActivityResultLauncher<Intent>)
-    abstract fun processAuthResult(resultCode: Int, data: Intent?)
+    abstract fun prepare(componentActivity: ComponentActivity)
+    abstract fun prepare(fragment: Fragment)
+
+    abstract fun startAuth()
+
+    // TODO: переименовать в clearAuth или forgetAuth
     abstract fun deAuth()
 
     interface Callbacks {
