@@ -13,10 +13,6 @@ android {
         targetSdk 36
         versionCode 10
         versionName "0.0.10-alpha"
-
-
-
-        manifestPlaceholders = [YANDEX_CLIENT_ID:"ca97bac9bcc0449ca840a608c839ac08"]
     }
     buildFeatures {
         viewBinding true
@@ -35,9 +31,11 @@ android {
             dimension 'installation_source'
             applicationIdSuffix '.local'
             getIsDefault().set(true)
+            manifestPlaceholders = [YANDEX_CLIENT_ID:"a1c4a8e0b1aa4ef5a5514f9d26e5304a"]
         }
         google {
             dimension 'installation_source'
+            manifestPlaceholders = [YANDEX_CLIENT_ID:"ca97bac9bcc0449ca840a608c839ac08"]
         }
     }
 
