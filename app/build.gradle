@@ -81,6 +81,22 @@ dependencies {
 // Версии с ошибками:
 //    implementation 'com.github.aakumykov:cloud_reader_2:4.0.0-alpha'
 //    implementation 'com.github.aakumykov:cloud_writer_2:7.4.0-alpha'
+    implementation 'com.github.aakumykov:cloud_reader_2:4.1.0-alpha'
+    implementation 'com.github.aakumykov:cloud_writer_2:7.6.0-alpha'
+
+    implementation 'com.github.aakumykov:storage_access_helper:2.0.0-alpha'
+
+    implementation 'com.github.aakumykov:file_lister_navigator_selector_2:16.0.0-alpha'
+
+    implementation "com.github.aakumykov:android_storage_lister:0.0.1-alpha"
+
+    implementation "com.leinardi.android:speed-dial:3.3.0"
+
+    implementation 'com.github.aakumykov:list_holding_list_adapter:0.0.5-alpha'
+
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.10.0"
+
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.3.0'
