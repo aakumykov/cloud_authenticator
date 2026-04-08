@@ -27,6 +27,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'retrofit2.pro'
         }
     }
+
+    flavorDimensions 'installation_source'
+
+    productFlavors {
+        local {
+            dimension 'installation_source'
+            applicationIdSuffix '.local'
+            getIsDefault().set(true)
+        }
+        google {
+            dimension 'installation_source'
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
