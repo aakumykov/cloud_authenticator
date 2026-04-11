@@ -24,13 +24,12 @@ import com.github.aakumykov.kotlin_playground.extensions.makeGone
 import com.github.aakumykov.kotlin_playground.extensions.makeVisible
 import com.github.aakumykov.kotlin_playground.extensions.showToast
 import com.github.aakumykov.kotlin_playground.extensions.storeStringInPreferences
-import com.github.aakumykov.local_authenticator.LocalAuthenticator
 import com.github.aakumykov.yandex_authenticator.YandexAuthenticator
 import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var signInLauncher: ActivityResultLauncher<Intent>
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var binding: ActivityMainBinding
 
@@ -43,8 +42,13 @@ class MainActivity : AppCompatActivity() {
     private val cloudAuthenticator: CloudAuthenticator get() = when(cloudAuthProvider) {
         CloudAuthProvider.YANDEX -> yandexAuthenticator()
         CloudAuthProvider.GOOGLE -> googleAuthenticator()
-        CloudAuthProvider.LOCAL -> localAuthenticator()
+//        CloudAuthProvider.LOCAL -> localAuthenticator()
     }.apply {
+        prepare(
+            context = this@MainActivity,
+            loginType = loginType,
+            activityResultLauncher = activityResultLauncher,
+        )
         currentAuthenticator = this
     }
 
@@ -54,14 +58,14 @@ class MainActivity : AppCompatActivity() {
         get() = when(binding.authProviders.checkedRadioButtonId) {
         R.id.yandexAuth -> CloudAuthProvider.YANDEX
         R.id.googleAuth -> CloudAuthProvider.GOOGLE
-        R.id.localAuth -> CloudAuthProvider.LOCAL
+//        R.id.localAuth -> CloudAuthProvider.LOCAL
         else -> throw IllegalStateException("Неизвестный провайдер авторизации в интерфейсе")
     }
 
     private val cloudAuthProviderName: String get() = when(cloudAuthProvider) {
         CloudAuthProvider.YANDEX -> getString(R.string.yandex)
         CloudAuthProvider.GOOGLE -> getString(R.string.google)
-        CloudAuthProvider.LOCAL -> getString(R.string.local)
+//        CloudAuthProvider.LOCAL -> getString(R.string.local)
     }
 
 
@@ -103,12 +107,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            cloudAuthenticator.processAuthResult(result.resultCode, result.data)
-        }
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            cloudAuthenticator.parseResult(activityResult)
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rootView)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -133,27 +137,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun yandexAuthenticator(): CloudAuthenticator {
-        return YandexAuthenticator(
-            loginType = loginType(),
-            context = this,
-            cloudAuthenticatorCallbacks = authCallbacks,
-            enableLogging = true
-        )
+        return YandexAuthenticator(cloudAuthenticatorCallbacks = authCallbacks)
     }
 
     private fun googleAuthenticator(): CloudAuthenticator {
         return GoogleAuthenticator(
-            loginType(),
+            loginType,
             this,
             authCallbacks
         )
     }
 
-    private fun localAuthenticator(): CloudAuthenticator {
+    /*private fun localAuthenticator(): CloudAuthenticator {
         return LocalAuthenticator(authCallbacks)
-    }
+    }*/
 
-    private fun loginType(): CloudAuthenticator.LoginType {
+    private val loginType: CloudAuthenticator.LoginType get() {
         return when (binding.loginTypeGroup.checkedRadioButtonId) {
             R.id.nativeLoginType -> CloudAuthenticator.LoginType.NATIVE
             R.id.webViewLoginType -> CloudAuthenticator.LoginType.WEBVIEW
@@ -185,7 +184,7 @@ class MainActivity : AppCompatActivity() {
     private fun onStartAuthClicked() {
         hideError()
 
-        if (null == authToken) cloudAuthenticator.startAuth(signInLauncher)
+        if (null == authToken) cloudAuthenticator.startAuth(this)
         else cloudAuthenticator.deAuth()
     }
 

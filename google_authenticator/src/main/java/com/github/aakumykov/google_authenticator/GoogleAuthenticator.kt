@@ -5,7 +5,11 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import com.github.aakumykov.cloud_authenticator.CloudAuthenticator
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -20,28 +24,52 @@ class GoogleAuthenticator(
 )
     : CloudAuthenticator()
 {
-    private val googleSignInOptions: GoogleSignInOptions
-    private val googleSignInClient: GoogleSignInClient
+    private lateinit var googleSignInOptions: GoogleSignInOptions
+    private lateinit var googleSignInClient: GoogleSignInClient
 
-    init {
-        googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestId()
-            .requestEmail()
-//            .requestIdToken(GOOGLE_AUTH_PLATFORM_CLIENT_ID)
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
-    }
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
 
-    override fun startAuth(activityResultLauncher: ActivityResultLauncher<Intent>) {
+    override fun startAuth(context: Context) {
+        prepareGoogleSignInStuff(context)
         activityResultLauncher.launch(googleSignInClient.signInIntent)
     }
 
+    override fun prepare(
+        componentActivity: ComponentActivity,
+        loginType: LoginType,
+        enableLogging: Boolean
+    ) {
+        prepareGoogleSignInStuff(componentActivity)
 
-    override fun processAuthResult(resultCode: Int, data: Intent?) {
-        when(resultCode) {
-            RESULT_OK -> processSignInData(data)
+        activityResultLauncher = componentActivity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            parseResult(activityResult)
+        }
+    }
+
+    override fun prepare(
+        fragment: Fragment,
+        loginType: LoginType,
+        enableLogging: Boolean
+    ) {
+        prepareGoogleSignInStuff(fragment.requireContext())
+
+        activityResultLauncher = fragment.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            parseResult(activityResult)
+        }
+    }
+
+    override fun prepare(context: Context,
+                        loginType: LoginType,
+                        activityResultLauncher: ActivityResultLauncher<Intent>,
+                        enableLogging: Boolean
+    ) {
+        this.activityResultLauncher = activityResultLauncher
+    }
+
+    override fun parseResult(activityResult: ActivityResult) {
+        when(activityResult.resultCode) {
+            RESULT_OK -> processSignInData(activityResult.data)
             RESULT_CANCELED -> cloudAuthenticatorCallbacks.onCloudAuthCancelled()
             else -> cloudAuthenticatorCallbacks.onCloudAuthFailed(Exception("Unknown result"))
         }
@@ -55,6 +83,15 @@ class GoogleAuthenticator(
             .addOnFailureListener { exception -> cloudAuthenticatorCallbacks.onDeAuthError(exception) }
     }
 
+    private fun prepareGoogleSignInStuff(context: Context) {
+        googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestId()
+            .requestEmail()
+            .requestIdToken(GOOGLE_AUTH_PLATFORM_CLIENT_ID)
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
+    }
 
     private fun processSignInData(data: Intent?) {
         try {
@@ -84,8 +121,7 @@ class GoogleAuthenticator(
             return
         }
 
-        // FIXME: временно возвращаю id, так как с idToken не работает.
-        val authToken: String? = account.id
+        val authToken: String? = account.idToken
 
         if (null == authToken) {
             cloudAuthenticatorCallbacks.onCloudAuthFailed(

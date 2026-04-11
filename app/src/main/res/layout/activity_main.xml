@@ -35,12 +35,12 @@
             app:buttonTint="@color/google"
             android:text="@string/google" />
 
-        <RadioButton
+        <!--<RadioButton
             android:id="@+id/localAuth"
             style="@style/auth_provider_radio"
             android:textColor="@color/local"
             app:buttonTint="@color/local"
-            android:text="@string/local" />
+            android:text="@string/local" />-->
 
     </RadioGroup>
 
