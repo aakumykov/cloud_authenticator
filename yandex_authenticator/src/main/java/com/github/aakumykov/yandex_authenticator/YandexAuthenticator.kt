@@ -33,37 +33,44 @@ class YandexAuthenticator(private val cloudAuthenticatorCallbacks: Callbacks, )
         componentActivity: ComponentActivity,
         loginType: LoginType,
         enableLogging: Boolean
-    ) {
+    ): CloudAuthenticator {
         prepareAuthenticatorStuff(componentActivity, loginType, enableLogging)
 
         activityResultLauncher = componentActivity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             parseResult(activityResult)
         }
+
+        return this
     }
 
     override fun prepare(
         fragment: Fragment,
         loginType: LoginType,
         enableLogging: Boolean
-    ) {
+    ): CloudAuthenticator {
         prepareAuthenticatorStuff(fragment.requireContext(), loginType, enableLogging)
 
         activityResultLauncher = fragment.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             parseResult(activityResult)
         }
+
+        return this
     }
 
     override fun startAuth(context: Context) {
-        val intent = yandexAuthContract.createIntent(context, yandexAuthLoginOptions)
-        activityResultLauncher.launch(activityResultContract.createIntent(context, intent))
+        val yandexAuthIntent = yandexAuthContract.createIntent(context, yandexAuthLoginOptions)
+        activityResultLauncher.launch(
+            activityResultContract.createIntent(context, yandexAuthIntent)
+        )
     }
 
     override fun prepare(context: Context,
                          loginType: LoginType,
                          activityResultLauncher: ActivityResultLauncher<Intent>,
-                         enableLogging: Boolean) {
+                         enableLogging: Boolean): CloudAuthenticator {
         this.activityResultLauncher = activityResultLauncher
         prepareAuthenticatorStuff(context, loginType, enableLogging)
+        return this
     }
 
     override fun parseResult(activityResult: ActivityResult) {

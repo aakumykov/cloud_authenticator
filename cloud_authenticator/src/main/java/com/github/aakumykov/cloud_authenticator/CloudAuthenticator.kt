@@ -24,21 +24,13 @@ import androidx.fragment.app.Fragment
  */
 abstract class CloudAuthenticator() {
 
-    /**
-     * Используется в связке с [startAuth].
-     */
     abstract fun prepare(componentActivity: ComponentActivity,
                          loginType: LoginType = LoginType.NATIVE,
-                         enableLogging: Boolean = false)
+                         enableLogging: Boolean = false): CloudAuthenticator
 
     abstract fun prepare(fragment: Fragment,
                          loginType: LoginType = LoginType.NATIVE,
-                         enableLogging: Boolean = false)
-    /**
-     * Используется в связке с [prepare] (componentActivity: ComponentActivity,
-     *                          loginType: LoginType, enableLogging: Boolean).
-     */
-    abstract fun startAuth(context: Context)
+                         enableLogging: Boolean = false): CloudAuthenticator
 
 
     /**
@@ -49,7 +41,7 @@ abstract class CloudAuthenticator() {
         loginType: LoginType = LoginType.NATIVE,
         activityResultLauncher: ActivityResultLauncher<Intent>,
         enableLogging: Boolean = false,
-    )
+    ): CloudAuthenticator
 
     /**
      * Используется в связке с [prepare] (
@@ -61,6 +53,7 @@ abstract class CloudAuthenticator() {
      */
     abstract fun parseResult(activityResult: ActivityResult)
 
+    abstract fun startAuth(context: Context)
     abstract fun deAuth()
 
     interface Callbacks {

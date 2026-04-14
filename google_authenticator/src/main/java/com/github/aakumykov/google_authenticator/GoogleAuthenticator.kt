@@ -39,32 +39,38 @@ class GoogleAuthenticator(
         componentActivity: ComponentActivity,
         loginType: LoginType,
         enableLogging: Boolean
-    ) {
+    ): CloudAuthenticator {
         prepareGoogleSignInStuff(componentActivity)
 
         activityResultLauncher = componentActivity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             parseResult(activityResult)
         }
+
+        return this
     }
 
     override fun prepare(
         fragment: Fragment,
         loginType: LoginType,
         enableLogging: Boolean
-    ) {
+    ): CloudAuthenticator {
         prepareGoogleSignInStuff(fragment.requireContext())
 
         activityResultLauncher = fragment.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             parseResult(activityResult)
         }
+
+        return this
     }
 
     override fun prepare(context: Context,
                         loginType: LoginType,
                         activityResultLauncher: ActivityResultLauncher<Intent>,
                         enableLogging: Boolean
-    ) {
-        this.activityResultLauncher = activityResultLauncher
+    ): CloudAuthenticator {
+        return this.apply {
+            this@GoogleAuthenticator.activityResultLauncher = activityResultLauncher
+        }
     }
 
     override fun parseResult(activityResult: ActivityResult) {
