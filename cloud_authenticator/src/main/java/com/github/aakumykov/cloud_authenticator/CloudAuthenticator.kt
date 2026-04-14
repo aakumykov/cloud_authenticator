@@ -28,9 +28,12 @@ abstract class CloudAuthenticator() {
      * Используется в связке с [startAuth].
      */
     abstract fun prepare(componentActivity: ComponentActivity,
-                         loginType: LoginType, enableLogging: Boolean)
+                         loginType: LoginType = LoginType.NATIVE,
+                         enableLogging: Boolean = false)
+
     abstract fun prepare(fragment: Fragment,
-                         loginType: LoginType, enableLogging: Boolean)
+                         loginType: LoginType = LoginType.NATIVE,
+                         enableLogging: Boolean = false)
     /**
      * Используется в связке с [prepare] (componentActivity: ComponentActivity,
      *                          loginType: LoginType, enableLogging: Boolean).
@@ -43,7 +46,7 @@ abstract class CloudAuthenticator() {
      */
     abstract fun prepare(
         context: Context,
-        loginType: LoginType,
+        loginType: LoginType = LoginType.NATIVE,
         activityResultLauncher: ActivityResultLauncher<Intent>,
         enableLogging: Boolean = false,
     )
