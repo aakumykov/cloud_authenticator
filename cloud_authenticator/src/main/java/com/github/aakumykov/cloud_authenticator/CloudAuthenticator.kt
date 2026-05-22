@@ -22,10 +22,7 @@ import androidx.fragment.app.Fragment
  * который передаётся в метод [prepare]; в этом случае [prepare]
  * можно вызывать позже onResume().
  */
-abstract class CloudAuthenticator {
-
-    protected var authCallbacks: AuthCallbacks? = null
-    protected var deauthCallbacks: DeauthCallbacks? = null
+abstract class CloudAuthenticator() {
 
     abstract fun prepare(componentActivity: ComponentActivity,
                          loginType: LoginType = LoginType.NATIVE,
@@ -51,34 +48,19 @@ abstract class CloudAuthenticator {
      *         context: Context,
      *         loginType: LoginType,
      *         activityResultLauncher: ActivityResultLauncher<Intent>,
-     *         enableLogging: Boolean = false
+     *         enableLogging: Boolean = false,
      *     )
      */
     abstract fun parseResult(activityResult: ActivityResult)
 
-    /**
-     * Auth and deauth callbacks overwrites callback, supplied to constructor!
-     */
-    abstract fun startAuth(
-        context: Context,
-        authCallbacks: AuthCallbacks? = null,
-    )
+    abstract fun startAuth(context: Context)
+    abstract fun deAuth()
 
-    /**
-     * Deauth callbacks overwrites callback, supplied to constructor!
-     */
-    abstract fun deAuth(deauthCallbacks: DeauthCallbacks? = null)
-
-
-    interface Callbacks: AuthCallbacks, DeauthCallbacks
-
-    interface AuthCallbacks {
+    interface Callbacks {
         fun onCloudAuthSuccess(authToken: String) {}
         fun onCloudAuthFailed(throwable: Throwable) {}
         fun onCloudAuthCancelled() {}
-    }
 
-    interface DeauthCallbacks {
         fun onDeAuthSuccess() {}
         fun onDeAuthCancelled(message: String? = null) {}
         fun onDeAuthError(throwable: Throwable) {}
