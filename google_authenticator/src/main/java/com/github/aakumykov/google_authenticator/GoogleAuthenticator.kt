@@ -20,17 +20,26 @@ import com.google.android.gms.common.api.ApiException
 class GoogleAuthenticator(
     loginType: LoginType = LoginType.NATIVE,
     private val context: Context,
-    private val cloudAuthenticatorCallbacks: Callbacks,
+    cloudAuthenticatorCallbacks: Callbacks,
 )
     : CloudAuthenticator()
 {
+    init {
+        authCallbacks = cloudAuthenticatorCallbacks
+        deauthCallbacks = cloudAuthenticatorCallbacks
+    }
+
     private lateinit var googleSignInOptions: GoogleSignInOptions
     private lateinit var googleSignInClient: GoogleSignInClient
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
 
-    override fun startAuth(context: Context) {
+    override fun startAuth(
+        context: Context,
+        authCallbacks: AuthCallbacks?,
+    ) {
+        this.authCallbacks = authCallbacks
         prepareGoogleSignInStuff(context)
         activityResultLauncher.launch(googleSignInClient.signInIntent)
     }
@@ -76,17 +85,18 @@ class GoogleAuthenticator(
     override fun parseResult(activityResult: ActivityResult) {
         when(activityResult.resultCode) {
             RESULT_OK -> processSignInData(activityResult.data)
-            RESULT_CANCELED -> cloudAuthenticatorCallbacks.onCloudAuthCancelled()
-            else -> cloudAuthenticatorCallbacks.onCloudAuthFailed(Exception("Unknown result"))
+            RESULT_CANCELED -> authCallbacks?.onCloudAuthCancelled()
+            else -> authCallbacks?.onCloudAuthFailed(Exception("Unknown result"))
         }
     }
 
 
-    override fun deAuth() {
+    override fun deAuth(deauthCallbacks: DeauthCallbacks?) {
+        this.deauthCallbacks = deauthCallbacks
         googleSignInClient.signOut()
-            .addOnSuccessListener { cloudAuthenticatorCallbacks.onDeAuthSuccess() }
-            .addOnCanceledListener { cloudAuthenticatorCallbacks.onDeAuthCancelled() }
-            .addOnFailureListener { exception -> cloudAuthenticatorCallbacks.onDeAuthError(exception) }
+            .addOnSuccessListener { deauthCallbacks?.onDeAuthSuccess() }
+            .addOnCanceledListener { deauthCallbacks?.onDeAuthCancelled() }
+            .addOnFailureListener { exception -> deauthCallbacks?.onDeAuthError(exception) }
     }
 
     private fun prepareGoogleSignInStuff(context: Context) {
@@ -109,7 +119,7 @@ class GoogleAuthenticator(
 
         } catch (e: ApiException) {
             Log.e(TAG, e.message, e)
-            cloudAuthenticatorCallbacks.onCloudAuthFailed(e)
+            authCallbacks?.onCloudAuthFailed(e)
         }
     }
 
@@ -122,7 +132,7 @@ class GoogleAuthenticator(
         if (null == account) {
             Exception("Error getting account info").also {
                 Log.e(TAG, it.message, it)
-                cloudAuthenticatorCallbacks.onCloudAuthFailed(it)
+                authCallbacks?.onCloudAuthFailed(it)
             }
             return
         }
@@ -130,13 +140,13 @@ class GoogleAuthenticator(
         val authToken: String? = account.idToken
 
         if (null == authToken) {
-            cloudAuthenticatorCallbacks.onCloudAuthFailed(
+            authCallbacks?.onCloudAuthFailed(
                 Exception("Id token from account is null")
             )
             return
         }
 
-        cloudAuthenticatorCallbacks.onCloudAuthSuccess(authToken)
+        authCallbacks?.onCloudAuthSuccess(authToken)
     }
 
 

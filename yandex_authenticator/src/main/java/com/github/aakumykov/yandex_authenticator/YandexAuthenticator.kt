@@ -15,12 +15,17 @@ import com.yandex.authsdk.YandexAuthSdkContract
 
 typealias YandexLoginType = com.yandex.authsdk.internal.strategy.LoginType
 
-class YandexAuthenticator(private val cloudAuthenticatorCallbacks: Callbacks, )
+class YandexAuthenticator(cloudAuthenticatorCallbacks: Callbacks? = null)
     : CloudAuthenticator()
 {
     private lateinit var yandexAuthOptions: YandexAuthOptions
     private lateinit var yandexAuthLoginOptions: YandexAuthLoginOptions
     private lateinit var yandexAuthContract: YandexAuthSdkContract
+
+    init {
+        authCallbacks = cloudAuthenticatorCallbacks
+        deauthCallbacks = cloudAuthenticatorCallbacks
+    }
 
     private val activityResultContract: ActivityResultContracts.StartActivityForResult by lazy {
         ActivityResultContracts.StartActivityForResult()
@@ -57,8 +62,14 @@ class YandexAuthenticator(private val cloudAuthenticatorCallbacks: Callbacks, )
         return this
     }
 
-    override fun startAuth(context: Context) {
+    override fun startAuth(
+        context: Context,
+        authCallbacks: AuthCallbacks?,
+    ) {
+        this.authCallbacks = authCallbacks
+
         val yandexAuthIntent = yandexAuthContract.createIntent(context, yandexAuthLoginOptions)
+
         activityResultLauncher.launch(
             activityResultContract.createIntent(context, yandexAuthIntent)
         )
@@ -76,14 +87,15 @@ class YandexAuthenticator(private val cloudAuthenticatorCallbacks: Callbacks, )
     override fun parseResult(activityResult: ActivityResult) {
         val yandexAuthResult: YandexAuthResult = yandexAuthContract.parseResult(activityResult.resultCode, activityResult.data)
         when(yandexAuthResult) {
-            is YandexAuthResult.Success -> cloudAuthenticatorCallbacks.onCloudAuthSuccess(yandexAuthResult.token.value)
-            is YandexAuthResult.Failure -> cloudAuthenticatorCallbacks.onCloudAuthFailed(yandexAuthResult.exception)
-            is YandexAuthResult.Cancelled -> cloudAuthenticatorCallbacks.onCloudAuthCancelled()
+            is YandexAuthResult.Success -> authCallbacks?.onCloudAuthSuccess(yandexAuthResult.token.value)
+            is YandexAuthResult.Failure -> authCallbacks?.onCloudAuthFailed(yandexAuthResult.exception)
+            is YandexAuthResult.Cancelled -> authCallbacks?.onCloudAuthCancelled()
         }
     }
 
-    override fun deAuth() {
-        cloudAuthenticatorCallbacks.onDeAuthSuccess()
+    override fun deAuth(deauthCallbacks: DeauthCallbacks?) {
+        this.deauthCallbacks = deauthCallbacks
+        deauthCallbacks?.onDeAuthSuccess()
     }
 
     private fun prepareAuthenticatorStuff(

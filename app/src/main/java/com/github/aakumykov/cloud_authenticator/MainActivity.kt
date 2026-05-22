@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private val authCallbacks = object: CloudAuthenticator.Callbacks {
+    private val callbacks = object: CloudAuthenticator.Callbacks {
 
         override fun onCloudAuthSuccess(authToken: String) {
             this@MainActivity.authToken = authToken
@@ -137,14 +137,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun yandexAuthenticator(): CloudAuthenticator {
-        return YandexAuthenticator(cloudAuthenticatorCallbacks = authCallbacks)
+        return YandexAuthenticator()
     }
 
     private fun googleAuthenticator(): CloudAuthenticator {
         return GoogleAuthenticator(
             loginType,
             this,
-            authCallbacks
+            callbacks
         )
     }
 
@@ -184,8 +184,8 @@ class MainActivity : AppCompatActivity() {
     private fun onStartAuthClicked() {
         hideError()
 
-        if (null == authToken) cloudAuthenticator.startAuth(this)
-        else cloudAuthenticator.deAuth()
+        if (null == authToken) cloudAuthenticator.startAuth(this, callbacks)
+        else cloudAuthenticator.deAuth(callbacks)
     }
 
 
