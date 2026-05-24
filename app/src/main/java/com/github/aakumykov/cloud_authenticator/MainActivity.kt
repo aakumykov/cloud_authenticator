@@ -14,16 +14,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.github.aakumykov.cloud_authenticator.databinding.ActivityMainBinding
+import com.github.aakumykov.cloud_authenticator.extensions.activity.eraseStringFromPreferences
+import com.github.aakumykov.cloud_authenticator.extensions.activity.getStringFromPreferences
+import com.github.aakumykov.cloud_authenticator.extensions.activity.showToast
+import com.github.aakumykov.cloud_authenticator.extensions.activity.storeStringInPreferences
 import com.github.aakumykov.cloud_authenticator.extensions.errorMsg
 import com.github.aakumykov.cloud_authenticator.extensions.errorMsgExtended
+import com.github.aakumykov.cloud_authenticator.extensions.makeGone
+import com.github.aakumykov.cloud_authenticator.extensions.makeVisible
 import com.github.aakumykov.google_authenticator.GoogleAuthenticator
-import com.github.aakumykov.kotlin_playground.CloudAuthProvider
-import com.github.aakumykov.kotlin_playground.extensions.eraseStringFromPreferences
-import com.github.aakumykov.kotlin_playground.extensions.getStringFromPreferences
-import com.github.aakumykov.kotlin_playground.extensions.makeGone
-import com.github.aakumykov.kotlin_playground.extensions.makeVisible
-import com.github.aakumykov.kotlin_playground.extensions.showToast
-import com.github.aakumykov.kotlin_playground.extensions.storeStringInPreferences
 import com.github.aakumykov.yandex_authenticator.YandexAuthenticator
 import com.google.android.material.button.MaterialButton
 
@@ -137,12 +136,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun yandexAuthenticator(): CloudAuthenticator {
-        return YandexAuthenticator(cloudAuthenticatorCallbacks = authCallbacks)
+        return YandexAuthenticator(authCallbacks)
     }
 
     private fun googleAuthenticator(): CloudAuthenticator {
         return GoogleAuthenticator(
-            loginType,
+            GOOGLE_WEB_CLIENT_ID,
             this,
             authCallbacks
         )
@@ -154,16 +153,16 @@ class MainActivity : AppCompatActivity() {
 
     private val loginType: CloudAuthenticator.LoginType get() {
         return when (binding.loginTypeGroup.checkedRadioButtonId) {
-            R.id.nativeLoginType -> CloudAuthenticator.LoginType.NATIVE
-            R.id.webViewLoginType -> CloudAuthenticator.LoginType.WEBVIEW
+            com.github.aakumykov.cloud_authenticator.R.id.nativeLoginType -> CloudAuthenticator.LoginType.NATIVE
+            com.github.aakumykov.cloud_authenticator.R.id.webViewLoginType -> CloudAuthenticator.LoginType.WEBVIEW
             else -> throw IllegalArgumentException("Неизвестный тип авторизации: ${binding.loginTypeGroup.checkedRadioButtonId}")
         }
     }
 
     private fun displayAuthStatus() {
         if (null == authToken) {
-            binding.authButton.text = getString(R.string.auth_in, cloudAuthProviderName)
-            binding.authButton.setIconResource(R.drawable.ic_log_in)
+            binding.authButton.text = getString(com.github.aakumykov.cloud_authenticator.R.string.auth_in, cloudAuthProviderName)
+            binding.authButton.setIconResource(com.github.aakumykov.cloud_authenticator.R.drawable.ic_log_in)
             binding.authButton.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
             binding.authTokenView.apply {
                 text = ""
@@ -171,12 +170,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
         else {
-            binding.authButton.text = getString(R.string.de_auth_from, cloudAuthProviderName)
-            binding.authButton.setIconResource(R.drawable.ic_log_out)
+            binding.authButton.text = getString(com.github.aakumykov.cloud_authenticator.R.string.de_auth_from, cloudAuthProviderName)
+            binding.authButton.setIconResource(com.github.aakumykov.cloud_authenticator.R.drawable.ic_log_out)
             binding.authButton.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_END
             binding.authTokenView.apply {
                 makeVisible()
-                text = getString(R.string.auth_token, authToken)
+                text = getString(com.github.aakumykov.cloud_authenticator.R.string.auth_token, authToken)
             }
         }
     }
@@ -219,6 +218,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
         const val AUTH_TOKEN = "AUTH_TOKEN"
+        const val GOOGLE_WEB_CLIENT_ID = "1050361086560-4ri95kmkkjd56sirkomhinfvs1o1hgqq.apps.googleusercontent.com"
     }
 
 }

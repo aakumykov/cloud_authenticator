@@ -15,7 +15,7 @@ import com.yandex.authsdk.YandexAuthSdkContract
 
 typealias YandexLoginType = com.yandex.authsdk.internal.strategy.LoginType
 
-class YandexAuthenticator(private val cloudAuthenticatorCallbacks: Callbacks, )
+class YandexAuthenticator(private val cloudAuthenticatorCallbacks: Callbacks)
     : CloudAuthenticator()
 {
     private lateinit var yandexAuthOptions: YandexAuthOptions

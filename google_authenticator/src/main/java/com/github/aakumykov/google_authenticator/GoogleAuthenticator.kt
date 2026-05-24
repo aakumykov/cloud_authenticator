@@ -18,7 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 
 class GoogleAuthenticator(
-    loginType: LoginType = LoginType.NATIVE,
+    private val webClientId: String,
     private val context: Context,
     private val cloudAuthenticatorCallbacks: Callbacks,
 )
@@ -93,7 +93,7 @@ class GoogleAuthenticator(
         googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestId()
             .requestEmail()
-            .requestIdToken(GOOGLE_AUTH_PLATFORM_CLIENT_ID)
+            .requestIdToken(webClientId)
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
